@@ -1,0 +1,2 @@
+# weather-static-cicd
+A SMALL BEGINNING FOR MY LONG INNINGS
