@@ -53,8 +53,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🌤️ MoFa4's Weather Dashboard</h1>
-        <p className="tagline">Your Long Innings Starts with Perfect Weather ☀️</p>
+        <h1>🌤️ MoFa's Weather Dashboard</h1>
+        <p className="tagline">Your Long day Starts with Perfect Weather forecast☀️</p>
 
         <form onSubmit={handleSearch} className="search-form">
           <input
