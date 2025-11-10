@@ -3,7 +3,7 @@ import './App.css';
 
 interface WeatherData {
   name: string;
-  main: { temp: number; feels_like: number; humidity: number };
+  main: { temp: number; feels_like: number; humidity: number; pressure: number };
   weather: Array<{ description: string; icon: string }>;
   wind: { speed: number };
   sys: { country: string };
@@ -36,7 +36,7 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchWeather('Sydney'); // Default Sydney load
+    fetchWeather('Sydney'); // Default Sydney
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -71,6 +71,7 @@ const App: React.FC = () => {
             <p>Feels: {Math.round(data.main.feels_like)}°C</p>
             <p>Humidity: {data.main.humidity}%</p>
             <p>Wind: {data.wind.speed} m/s</p>
+            <p className="pressure">Pressure: {data.main.pressure} hPa</p> {/* NEW PRESSURE LINE 🔥 */}
           </div>
         )}
       </header>
