@@ -48,7 +48,7 @@ function App() {
     <div className="app-container">
       <div className="overlay">
         <header className="App-header">
-          <h1>MoFa4's Weather App</h1>
+          <h1>MoFa WeatherBoss</h1>
           <form onSubmit={handleSearch}>
             <input
               type="text"
@@ -77,6 +77,12 @@ function App() {
                 <p>Humidity: {data.main.humidity}%</p>
                 <p>Wind: {data.wind.speed} m/s</p>
                 <p>Pressure: {data.main.pressure} hPa</p>
+                <img 
+                    src="public/logo.png" 
+                    alt="MoFa4 Weather" 
+                    className="app-logo" 
+                    style={{ width: '60px', height: '60px' }}
+                  />
               </div>
             </div>
           )}
