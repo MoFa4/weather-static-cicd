@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import './App.css';
 
 interface WeatherData {
   name: string;
   main: { temp: number; feels_like: number; humidity: number; pressure: number };
-  weather: Array<{ description: string; icon: string }>;
+  weather: Array<{ main: string; description: string; icon: string }>;
   wind: { speed: number };
   sys: { country: string };
+  dt: number;
+  timezone: number;
 }
 
-const App: React.FC = () => {
+function App() {
   const [input, setInput] = useState('');
   const [data, setData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [bgClass, setBgClass] = useState('bg-default'); // DYNAMIC BG CLASS
+  const [bgClass, setBgClass] = useState('bg-default');
+  const [localTime, setLocalTime] = useState('');
 
   const API_KEY = process.env.REACT_APP_WEATHER_API_KEY || '73f5d3b2b1b0f2b3b4b5b6b7b8b9c0d1';
 
@@ -25,10 +28,9 @@ const App: React.FC = () => {
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`
       );
-      if (!res.ok) throw new Error('City not found');
+      if (!res.ok) throw new Error('City not found!');
       const json: WeatherData = await res.json();
       setData(json);
-      updateBackground(json); // TRIGGER BG CHANGE
     } catch (err: any) {
       setError(err.message);
       setData(null);
@@ -38,22 +40,37 @@ const App: React.FC = () => {
 
   const updateBackground = (data: WeatherData) => {
     const temp = data.main.temp;
-    const desc = data.weather[0].description.toLowerCase();
+    const desc = data.weather[0].main.toLowerCase(); // Use 'main' for broader conditions
 
-    if (temp > 28 || desc.includes('haze') || desc.includes('smoke') || desc.includes('dust') || desc.includes('mist')) {
-      setBgClass('bg-hot');        // Tiruvallur / Delhi
-    } else if (temp > 20 || desc.includes('clear') || desc.includes('few clouds') || desc.includes('scattered clouds')) {
-      setBgClass('bg-sunny');      // Sydney
-    } else if (temp < 10 || desc.includes('snow')) {
-      setBgClass('bg-snow');       // Cold
-    } else if (desc.includes('rain') || desc.includes('drizzle') || desc.includes('thunder') || desc.includes('storm')) {
-      setBgClass('bg-rain');       // London rain
+    if (temp > 30 || desc === 'haze' || desc === 'smoke') {
+      setBgClass('bg-hot'); // Hazy hot desert
+    } else if (temp > 20 || desc === 'clear') {
+      setBgClass('bg-sunny'); // Sunny landscape
+    } else if (desc === 'clouds') {
+      setBgClass('bg-cloudy'); // Cloudy mountains
+    } else if (desc === 'rain' || desc === 'drizzle' || desc === 'thunderstorm') {
+      setBgClass('bg-rain'); // Rainy landscape
+    } else if (temp < 10 || desc === 'snow') {
+      setBgClass('bg-snow'); // Snowy forest
     } else {
-      setBgClass('bg-cloudy');     // Kobe
+      setBgClass('bg-default'); // Purple gradient fallback
     }
   };
 
-  // DEFAULT: Load Sydney on start
+  const updateLocalTime = (data: WeatherData) => {
+    const utcTime = data.dt * 1000; // Unix to ms
+    const offset = data.timezone * 1000; // Offset to ms
+    const localDate = new Date(utcTime + offset);
+    setLocalTime(localDate.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' }));
+  };
+
+  useLayoutEffect(() => {
+    if (data) {
+      updateBackground(data);
+      updateLocalTime(data);
+    }
+  }, [data]);
+
   useEffect(() => {
     fetchWeather('Sydney');
   }, []);
@@ -68,35 +85,39 @@ const App: React.FC = () => {
     <div className={`app-container ${bgClass}`}>
       <div className="overlay">
         <header className="App-header">
-          <h1>MoFa4's Global Weather</h1>
-          <form onSubmit={handleSearch} className="search-form">
-            <input
-              type="text"
-              placeholder="Search city: Delhi, Sydney, Kobe..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-            />
+          <h1>🌤️ MoFa4's Weather App</h1>
+          <form onSubmit={handleSearch}>
+            <input type="text" placeholder="Enter city..." value={input} onChange={(e) => setInput(e.target.value)} />
             <button type="submit">Search</button>
           </form>
 
-          {loading && <p className="loading">Loading...</p>}
+          {loading && <p>Loading...</p>}
           {error && <p className="error">{error}</p>}
 
           {data && (
             <div className="weather-card">
               <h2>{data.name}, {data.sys.country}</h2>
-              <img 
-                src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`} 
-                alt={data.weather[0].description}
-                className="weather-icon"
-              />
+              <p className="local-time">{localTime}</p>
+              <img src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`} alt={data.weather[0].description} className="weather-icon" />
               <p className="temp">{Math.round(data.main.temp)}°C</p>
               <p className="description">{data.weather[0].description.toUpperCase()}</p>
-              <div className="details">
-                <p>Feels like: {Math.round(data.main.feels_like)}°C</p>
-                <p>Humidity: {data.main.humidity}%</p>
-                <p>Wind: {data.wind.speed} m/s</p>
-                <p className="pressure">Pressure: {data.main.pressure} hPa</p>
+              <div className="details-grid">
+                <div className="detail-item">
+                  <span className="label">Feels Like</span>
+                  <span>{Math.round(data.main.feels_like)}°C</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Humidity</span>
+                  <span>{data.main.humidity}%</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Wind Speed</span>
+                  <span>{data.wind.speed} m/s</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Pressure</span>
+                  <span>{data.main.pressure} hPa</span>
+                </div>
               </div>
             </div>
           )}
