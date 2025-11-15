@@ -1,39 +1,100 @@
 .app-container {
   min-height: 100vh;
+  background: url('https://images.unsplash.com/photo-1501139083538-0139583c060f?auto=format&fit=crop&q=80&w=1920') center/cover no-repeat fixed;
   position: relative;
-  overflow: hidden;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.5s ease;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.app-container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-  transition: background 1.5s ease-in-out;
+.overlay {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  color: white;
 }
 
-/* DAY BGs */
-.bg-haze-day::before { background: url('https://media.istockphoto.com/id/1163732097/photo/spring-came-with-melting-snow-and-morning-fog-to-the-local-park-person-gong-to-work-in-a.jpg?s=612x612&w=0&k=20&c=eCVisqYqL99FPlcjDJMROorjTN1_BC_EFb6w3pWQsNs=') center/cover no-repeat fixed; }
-.bg-smoke-day::before { background: url('https://www.shutterstock.com/image-photo/dramatic-dark-storm-clouds-sky-260nw-2455299813.jpg') center/cover no-repeat fixed; }
-.bg-mist-day::before { background: url('https://thumbs.dreamstime.com/b/trail-spring-deciduous-forest-sunshine-foggy-weather-dense-mist-sunlight-create-mysterious-scenery-june-139481773.jpg') center/cover no-repeat fixed; }
-.bg-clear-day::before { background: url('https://st4.depositphotos.com/5089729/38596/i/450/depositphotos_385960030-stock-photo-clear-weather-day-time-vivid.jpg') center/cover no-repeat fixed; }
-.bg-scattered-day::before { background: url('https://www.shutterstock.com/image-photo/blue-sky-scattered-white-clouds-260nw-2671616273.jpg') center/cover no-repeat fixed; }
-.bg-overcast-day::before { background: url('https://media.istockphoto.com/id/912014918/photo/blue-sky-with-cloud-background.jpg?s=612x612&w=0&k=20&c=BOrf4OSY6LFUIv4eAmMbmch28f-nCCUAlnGMdF9ichQ=') center/cover no-repeat fixed; }
-.bg-thunder-day::before { background: url('https://media.istockphoto.com/id/1011777484/photo/cloud-storm-sky-with-thunderbolt-over-rural-landscape.jpg?s=612x612&w=0&k=20&c=_PQT1n74nDGrZJqvivJqSIsFY1LWH1sN8cHzbvskKx8=') center/cover no-repeat fixed; }
-.bg-snow-day::before { background: url('https://www.shutterstock.com/image-vector/winter-snow-landscape-houses-on-260nw-1819740467.jpg') center/cover no-repeat fixed; }
+.App-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
 
-/* NIGHT BGs */
-.bg-haze-night::before { background: url('https://media.istockphoto.com/id/2186506425/photo/foggy-weather-lanterns-by-the-road-night-city.jpg?s=612x612&w=0&k=20&c=33_DBcM5kxShmf5ExiKJprgT_ENyXFT5qQlDk_VJe2Q=') center/cover no-repeat fixed; }
-.bg-smoke-night::before { background: url('https://www.shutterstock.com/image-photo/sky-cloud-dark-stormy-cloudy-260nw-2472993247.jpg') center/cover no-repeat fixed; }
-.bg-mist-night::before { background: url('https://media.gettyimages.com/id/2186506425/photo/foggy-weather-lanterns-by-the-road-night-city.jpg?s=612x612&w=gi&k=20&c=tNHJSE24G0flMSxZ2N0CUgy3MDCtO4a57IVqKxhi42Q=') center/cover no-repeat fixed; }
-.bg-clear-night::before { background: url('https://www.shutterstock.com/shutterstock/videos/1097698459/thumb/11.jpg?ip=x480') center/cover no-repeat fixed; }
-.bg-scattered-night::before { background: url('https://www.shutterstock.com/image-illustration/scattered-clouds-glowing-sky-sunset-260nw-1594295185.jpg') center/cover no-repeat fixed; }
-.bg-overcast-night::before { background: url('https://media.istockphoto.com/id/912014918/photo/blue-sky-with-cloud-background.jpg?s=612x612&w=0&k=20&c=BOrf4OSY6LFUIv4eAmMbmch28f-nCCUAlnGMdF9ichQ=') center/cover no-repeat fixed; } /* Night overcast same as day for simplicity, or replace if needed */
-.bg-thunder-night::before { background: url('https://media.istockphoto.com/id/940296124/photo/lightning-during-summer-storm.jpg?s=612x612&w=0&k=20&c=9FW8y8QUX76Cx8byPvwXCnUP4fQqGbxTNWQsSLch4l8=') center/cover no-repeat fixed; }
-.bg-snow-night::before { background: url('https://www.shutterstock.com/image-vector/beautiful-falling-snowflakes-wallpaper-winter-260nw-2510908443.jpg') center/cover no-repeat fixed; }
+form {
+  display: flex;
+  margin: 20px 0;
+  max-width: 400px;
+  width: 100%;
+}
 
-.overlay, .App-header, form, .weather-card, .details-grid, .detail-item, .label, .temp, .description, .local-time, .weather-icon, .loading, .error { /* Your existing styles, no change */ }
+input {
+  flex: 1;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 50px 0 0 50px;
+  font-size: 1.1rem;
+  outline: none;
+}
+
+button {
+  padding: 14px 28px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 0 50px 50px 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #ff5252;
+}
+
+.weather-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 400px;
+  text-align: center;
+  margin-top: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.weather-icon {
+  width: 120px;
+  height: 120px;
+}
+
+.temp {
+  font-size: 3.8rem;
+  font-weight: 700;
+  margin: 10px 0;
+  color: #ffd93d;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.description {
+  font-size: 1.3rem;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.details p {
+  margin: 8px 0;
+  font-size: 1.1rem;
+}
+
+.loading {
+  font-size: 1.2rem;
+  margin: 20px;
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight: bold;
+}
