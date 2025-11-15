@@ -2,88 +2,102 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.5s ease;
 }
 
 .app-container::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: #6a11cb center/cover no-repeat fixed;
   background-size: cover;
+  background-position: center;
   z-index: -1;
-  transition: background 1.8s ease-in-out;
+  transition: background 1.5s ease-in-out;
 }
 
-/* DYNAMIC BACKGROUNDS */
-.bg-hot::before    { background: url('https://images.pexels.com/photos/34729526/pexels-photo-34729526.jpeg') center/cover no-repeat fixed; }
-.bg-sunny::before  { background: url('https://images.pexels.com/photos/34729526/pexels-photo-34729526.jpeg') center/cover no-repeat fixed; }
-.bg-cloudy::before { background: url('http://googleusercontent.com/image_generation_content/0') center/cover no-repeat fixed; }
-.bg-rain::before   { background: url('http://googleusercontent.com/image_generation_content/1') center/cover no-repeat fixed; }
-.bg-snow::before   { background: url('http://googleusercontent.com/image_generation_content/0') center/cover no-repeat fixed; }
-.bg-default::before { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+.bg-default::before {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.bg-hot::before {
+  background: url('https://media.istockphoto.com/id/1176339800/photo/world-environment-day-concept.jpg?s=612x612&w=0&k=20&c=zjkM-aYdRHr_rpNBARUtEtYLeTn5GW9aevlfaXBvSos=') no-repeat center/cover;
+}
+
+.bg-sunny::before {
+  background: url('https://media.istockphoto.com/id/612023744/photo/blue-and-orange-sunset-sky.jpg?s=612x612&w=0&k=20&c=bqPHaI4d3ghIbLIwtbTDPxV8QQ2pIN2mbCfzLb7gucQ=') no-repeat center/cover;
+}
+
+.bg-cloudy::before {
+  background: url('https://www.shutterstock.com/image-photo/dramatic-landscape-panorama-mountain-peaks-600nw-2651165397.jpg') no-repeat center/cover;
+}
+
+.bg-rain::before {
+  background: url('https://media.istockphoto.com/id/498063665/photo/rainy-landscape.jpg?s=612x612&w=0&k=20&c=2KhHJguvlQvd83c-CJeOiuEKI323gbtSIf1n2sNdXJc=') no-repeat center/cover;
+}
+
+.bg-snow::before {
+  background: url('https://thumbs.dreamstime.com/b/beautiful-snowy-winter-forest-background-nature-landscape-tree-sunset-47115906.jpg') no-repeat center/cover;
+}
 
 .overlay {
   position: relative;
-  z-index: 2;
-  min-height: 100vh;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   padding: 20px;
   color: white;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .App-header h1 {
   font-size: 2.8rem;
   margin-bottom: 20px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-.search-form {
+form {
   display: flex;
   margin: 20px 0;
   max-width: 400px;
-  width: 100%;
 }
 
-.search-form input {
+input {
   flex: 1;
-  padding: 16px 20px;
+  padding: 16px;
   border: none;
   border-radius: 50px 0 0 50px;
   font-size: 1.1rem;
   outline: none;
 }
 
-.search-form button {
+button {
   padding: 16px 32px;
-  background: #ff6b6b;
+  background: linear-gradient(45deg, #ff6b6b, #ff5252);
   color: white;
   border: none;
   border-radius: 0 50px 50px 0;
   cursor: pointer;
   font-weight: bold;
-  transition: 0.3s;
+  transition: transform 0.3s;
 }
 
-.search-form button:hover {
-  background: #ff5252;
+button:hover {
+  transform: scale(1.05);
 }
 
 .weather-card {
   background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 32px;
   max-width: 420px;
-  width: 100%;
-  margin: 30px auto;
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-  animation: fadeIn 0.8s ease;
   text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+  border: 1px solid rgba(255,255,255,0.18);
+  animation: fadeIn 0.5s ease-in;
 }
 
 @keyframes fadeIn {
@@ -91,40 +105,53 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.local-time {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
 .weather-icon {
-  width: 120px;
-  height: 120px;
-  margin: 10px auto;
+  width: 150px;
+  height: 150px;
+  margin: -20px auto 10px;
 }
 
 .temp {
   font-size: 4.5rem;
   font-weight: 700;
-  margin: 10px 0;
+  margin: 0 0 10px;
   background: linear-gradient(45deg, #ffd93d, #ff6b6b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .description {
-  font-size: 1.3rem;
-  margin: 8px 0;
-  font-weight: 500;
+  font-size: 1.4rem;
+  margin: 0 0 20px;
+  text-transform: capitalize;
 }
 
-.details p {
-  margin: 8px 0;
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
   font-size: 1.1rem;
 }
 
-.pressure {
-  font-weight: bold;
-  color: #ffd93d;
+.label {
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
 
 .loading, .error {
   font-size: 1.2rem;
-  margin: 20px 0;
+  margin: 20px;
 }
 
 .error {
