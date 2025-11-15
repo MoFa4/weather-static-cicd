@@ -38,34 +38,38 @@ function App() {
     setLoading(false);
   };
 
-   const updateBackground = (data: WeatherData) => {
+  const updateBackground = (data: WeatherData) => {
     const temp = data.main.temp;
-    const desc = data.weather[0].description.toLowerCase(); // Use description for accuracy
+    const main = data.weather[0].main.toLowerCase();
+    const desc = data.weather[0].description.toLowerCase();
 
-    if (desc.includes('fog') || desc.includes('mist') || desc.includes('smoke') || desc.includes('haze')) {
-      setBgClass('bg-mist');       // Hazy desert for mist/smoke/fog
-    } else if (desc.includes('snow') || temp < 5) {
-      setBgClass('bg-snow');       // Snowy forest
-    } else if (desc.includes('clear') || desc.includes('sunny')) {
-      setBgClass('bg-sunny');      // Sunny beach
-    } else if (desc.includes('rain') || desc.includes('drizzle') || desc.includes('storm')) {
-      setBgClass('bg-rain');
-    } else if (desc.includes('clouds')) {
-      setBgClass('bg-cloudy');
+    if (main === 'haze' || desc.includes('mist') || desc.includes('smoke') || desc.includes('fog')) {
+      setBgClass('bg-haze'); // Hazy desert for mist/smoke/fog/haze
+    } else if (main === 'clouds') {
+      setBgClass('bg-cloudy'); // Cloudy mountains for overcast/broken clouds
+    } else if (main === 'clear' || desc.includes('sunny')) {
+      setBgClass('bg-sunny'); // Sunny beach for clear sky
+    } else if (main === 'rain' || main === 'drizzle' || main === 'thunderstorm') {
+      setBgClass('bg-rain'); // Stormy rain
+    } else if (main === 'snow' || temp < 5) {
+      setBgClass('bg-snow'); // Snowy forest
     } else {
-      setBgClass('bg-default');
+      setBgClass('bg-default'); // Purple fallback
     }
   };
 
   const updateLocalTime = (data: WeatherData) => {
-    const local = new Date((data.dt + data.timezone) * 1000);
-    setLocalTime(local.toLocaleString('en-US', {
+    // Fix: Use dt (local Unix time) + timezone offset for city's local time
+    const localUnix = data.dt + data.timezone;
+    const localDate = new Date(localUnix * 1000);
+    setLocalTime(localDate.toLocaleString('en-US', {
       weekday: 'short',
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+      hour12: true,
       timeZoneName: 'short'
     }));
   };
@@ -78,7 +82,7 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    fetchWeather('Sydney');
+    fetchWeather('Hyderabad'); // Default Hyderabad for IST test
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -131,6 +135,6 @@ function App() {
       </div>
     </div>
   );
-};
+}
 
 export default App;
