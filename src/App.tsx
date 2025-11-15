@@ -38,30 +38,36 @@ function App() {
     setLoading(false);
   };
 
-  const updateBackground = (data: WeatherData) => {
+   const updateBackground = (data: WeatherData) => {
     const temp = data.main.temp;
-    const desc = data.weather[0].main.toLowerCase(); // Use 'main' for broader conditions
+    const desc = data.weather[0].description.toLowerCase(); // Use description for accuracy
 
-    if (temp > 30 || desc === 'haze' || desc === 'smoke') {
-      setBgClass('bg-hot'); // Hazy hot desert
-    } else if (temp > 20 || desc === 'clear') {
-      setBgClass('bg-sunny'); // Sunny landscape
-    } else if (desc === 'clouds') {
-      setBgClass('bg-cloudy'); // Cloudy mountains
-    } else if (desc === 'rain' || desc === 'drizzle' || desc === 'thunderstorm') {
-      setBgClass('bg-rain'); // Rainy landscape
-    } else if (temp < 10 || desc === 'snow') {
-      setBgClass('bg-snow'); // Snowy forest
+    if (desc.includes('fog') || desc.includes('mist') || desc.includes('smoke') || desc.includes('haze')) {
+      setBgClass('bg-mist');       // Hazy desert for mist/smoke/fog
+    } else if (desc.includes('snow') || temp < 5) {
+      setBgClass('bg-snow');       // Snowy forest
+    } else if (desc.includes('clear') || desc.includes('sunny')) {
+      setBgClass('bg-sunny');      // Sunny beach
+    } else if (desc.includes('rain') || desc.includes('drizzle') || desc.includes('storm')) {
+      setBgClass('bg-rain');
+    } else if (desc.includes('clouds')) {
+      setBgClass('bg-cloudy');
     } else {
-      setBgClass('bg-default'); // Purple gradient fallback
+      setBgClass('bg-default');
     }
   };
 
   const updateLocalTime = (data: WeatherData) => {
-    const utcTime = data.dt * 1000; // Unix to ms
-    const offset = data.timezone * 1000; // Offset to ms
-    const localDate = new Date(utcTime + offset);
-    setLocalTime(localDate.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' }));
+    const local = new Date((data.dt + data.timezone) * 1000);
+    setLocalTime(local.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    }));
   };
 
   useLayoutEffect(() => {
