@@ -19,7 +19,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [bgClass, setBgClass] = useState('bg-default-day');
-  const [localTime, setLocalTime] = useState('');
 
   const API_KEY = process.env.REACT_APP_WEATHER_API_KEY || '73f5d3b2b1b0f2b3b4b5b6b7b8b9c0d1';
 
@@ -44,38 +43,47 @@ function App() {
     const currentTime = data.dt;
     const isNight = currentTime < data.sunrise || currentTime > data.sunset;
     const dayNight = isNight ? 'night' : 'day';
-    const main = data.weather[0].main.toLowerCase();
     const desc = data.weather[0].description.toLowerCase();
 
-    let className = `bg-${main}-${dayNight}`;
+    let bg = 'bg-default-day';
+
     if (desc.includes('haze') || desc.includes('mist') || desc.includes('smoke') || desc.includes('fog')) {
-      className = `bg-haze-${dayNight}`;
+      bg = `bg-haze-${dayNight}`;
+    } else if (desc.includes('clear')) {
+      bg = `bg-clear-${dayNight}`;
     } else if (desc.includes('scattered clouds')) {
-      className = `bg-scattered-${dayNight}`;
+      bg = `bg-scattered-${dayNight}`;
     } else if (desc.includes('overcast clouds')) {
-      className = `bg-overcast-${dayNight}`;
-    } else if (main === 'clear' || desc.includes('clear sky')) {
-      className = `bg-clear-${dayNight}`;
-    } else if (main === 'thunderstorm') {
-      className = `bg-thunder-${dayNight}`;
-    } else if (main === 'snow') {
-      className = `bg-snow-${dayNight}`;
+      bg = `bg-overcast-${dayNight}`;
+    } else if (desc.includes('thunderstorm')) {
+      bg = `bg-thunder-${dayNight}`;
+    } else if (desc.includes('snow')) {
+      bg = `bg-snow-${dayNight}`;
+    } else if (desc.includes('rain') || desc.includes('drizzle')) {
+      bg = `bg-rain-${dayNight}`;
     }
 
-    setBgClass(className);
+    setBgClass(bg);
   };
 
-  const updateLocalTime = (data: WeatherData) => {
-    const utcTime = data.dt * 1000; // Unix to ms
-    const istOffset = 5.5 * 60 * 60 * 1000; // IST UTC+5:30 in ms
-    const istDate = new Date(utcTime + istOffset);
-    setLocalTime(istDate.toLocaleString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }));
+  const getISTTime = (data: WeatherData) => {
+    const localTime = (data.dt + data.timezone) * 1000; // Local time in ms
+    const istTime = localTime + (5.5 * 60 * 60 * 1000); // Convert to IST
+    const date = new Date(istTime);
+    return date.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }) + ' IST';
   };
 
   useLayoutEffect(() => {
     if (data) {
       updateBackground(data);
-      updateLocalTime(data);
     }
   }, [data]);
 
@@ -93,7 +101,7 @@ function App() {
     <div className={`app-container ${bgClass}`}>
       <div className="overlay">
         <header className="App-header">
-          <h1>🌤️ MoFa4's Weather App</h1>
+          <h1>MoFa4's Weather App</h1>
           <form onSubmit={handleSearch}>
             <input type="text" placeholder="Enter city..." value={input} onChange={(e) => setInput(e.target.value)} />
             <button type="submit">Search</button>
@@ -105,7 +113,7 @@ function App() {
           {data && (
             <div className="weather-card">
               <h2>{data.name}, {data.sys.country}</h2>
-              <p className="local-time">{localTime}</p>
+              <p className="local-time">{getISTTime(data)}</p>
               <img src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`} alt={data.weather[0].description} className="weather-icon" />
               <p className="temp">{Math.round(data.main.temp)}°C</p>
               <p className="description">{data.weather[0].description.toUpperCase()}</p>
