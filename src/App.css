@@ -20,36 +20,24 @@
   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-.bg-hot::before {
-  background: url('https://media.istockphoto.com/id/1176339800/photo/world-environment-day-concept.jpg?s=612x612&w=0&k=20&c=zjkM-aYdRHr_rpNBARUtEtYLeTn5GW9aevlfaXBvSos=') no-repeat center/cover;
-}
-
-.bg-sunny::before {
-  background: url('https://media.istockphoto.com/id/612023744/photo/blue-and-orange-sunset-sky.jpg?s=612x612&w=0&k=20&c=bqPHaI4d3ghIbLIwtbTDPxV8QQ2pIN2mbCfzLb7gucQ=') no-repeat center/cover;
-}
-
-.bg-cloudy::before {
-  background: url('https://www.shutterstock.com/image-photo/dramatic-landscape-panorama-mountain-peaks-600nw-2651165397.jpg') no-repeat center/cover;
-}
-
-.bg-rain::before {
-  background: url('https://media.istockphoto.com/id/498063665/photo/rainy-landscape.jpg?s=612x612&w=0&k=20&c=2KhHJguvlQvd83c-CJeOiuEKI323gbtSIf1n2sNdXJc=') no-repeat center/cover;
-}
-
-.bg-snow::before {
-  background: url('https://thumbs.dreamstime.com/b/beautiful-snowy-winter-forest-background-nature-landscape-tree-sunset-47115906.jpg') no-repeat center/cover;
-}
-
-.bg-mist::before {
+.bg-haze::before {
   background: url('https://images.unsplash.com/photo-1542382157939-5c5d2d5b5c5f?auto=format&fit=crop&q=60&w=1920') center/cover no-repeat fixed;
 }
 
-.bg-snow::before {
-  background: url('https://images.unsplash.com/photo-1477603566046-945b3c7b3d6c?auto=format&fit=crop&q=60&w=1920') center/cover no-repeat fixed;
+.bg-cloudy::before {
+  background: url('https://images.unsplash.com/photo-1492011221367-f47e3ccd77a0?auto=format&fit=crop&q=60&w=1920') center/cover no-repeat fixed;
 }
 
 .bg-sunny::before {
   background: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&q=60&w=1920') center/cover no-repeat fixed;
+}
+
+.bg-rain::before {
+  background: url('https://images.unsplash.com/photo-1534086721723-4d4d5c3a36a6?auto=format&fit=crop&q=60&w=1920') center/cover no-repeat fixed;
+}
+
+.bg-snow::before {
+  background: url('https://images.unsplash.com/photo-1477603566046-945b3c7b3d6c?auto=format&fit=crop&q=60&w=1920') center/cover no-repeat fixed;
 }
 
 .overlay {
