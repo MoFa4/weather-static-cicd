@@ -9,6 +9,8 @@ interface WeatherData {
   sys: { country: string };
   dt: number;
   timezone: number;
+  sunrise: number;
+  sunset: number;
 }
 
 function App() {
@@ -16,7 +18,7 @@ function App() {
   const [data, setData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [bgClass, setBgClass] = useState('bg-default');
+  const [bgClass, setBgClass] = useState('bg-default-day');
   const [localTime, setLocalTime] = useState('');
 
   const API_KEY = process.env.REACT_APP_WEATHER_API_KEY || '73f5d3b2b1b0f2b3b4b5b6b7b8b9c0d1';
@@ -39,39 +41,35 @@ function App() {
   };
 
   const updateBackground = (data: WeatherData) => {
-    const temp = data.main.temp;
+    const currentTime = data.dt;
+    const isNight = currentTime < data.sunrise || currentTime > data.sunset;
+    const dayNight = isNight ? 'night' : 'day';
     const main = data.weather[0].main.toLowerCase();
     const desc = data.weather[0].description.toLowerCase();
 
-    if (main === 'haze' || desc.includes('mist') || desc.includes('smoke') || desc.includes('fog')) {
-      setBgClass('bg-haze'); // Hazy desert for mist/smoke/fog/haze
-    } else if (main === 'clouds') {
-      setBgClass('bg-cloudy'); // Cloudy mountains for overcast/broken clouds
-    } else if (main === 'clear' || desc.includes('sunny')) {
-      setBgClass('bg-sunny'); // Sunny beach for clear sky
-    } else if (main === 'rain' || main === 'drizzle' || main === 'thunderstorm') {
-      setBgClass('bg-rain'); // Stormy rain
-    } else if (main === 'snow' || temp < 5) {
-      setBgClass('bg-snow'); // Snowy forest
-    } else {
-      setBgClass('bg-default'); // Purple fallback
+    let className = `bg-${main}-${dayNight}`;
+    if (desc.includes('haze') || desc.includes('mist') || desc.includes('smoke') || desc.includes('fog')) {
+      className = `bg-haze-${dayNight}`;
+    } else if (desc.includes('scattered clouds')) {
+      className = `bg-scattered-${dayNight}`;
+    } else if (desc.includes('overcast clouds')) {
+      className = `bg-overcast-${dayNight}`;
+    } else if (main === 'clear' || desc.includes('clear sky')) {
+      className = `bg-clear-${dayNight}`;
+    } else if (main === 'thunderstorm') {
+      className = `bg-thunder-${dayNight}`;
+    } else if (main === 'snow') {
+      className = `bg-snow-${dayNight}`;
     }
+
+    setBgClass(className);
   };
 
   const updateLocalTime = (data: WeatherData) => {
-    // Fix: Use dt (local Unix time) + timezone offset for city's local time
-    const localUnix = data.dt + data.timezone;
-    const localDate = new Date(localUnix * 1000);
-    setLocalTime(localDate.toLocaleString('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-      timeZoneName: 'short'
-    }));
+    const utcTime = data.dt * 1000; // Unix to ms
+    const istOffset = 5.5 * 60 * 60 * 1000; // IST UTC+5:30 in ms
+    const istDate = new Date(utcTime + istOffset);
+    setLocalTime(istDate.toLocaleString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }));
   };
 
   useLayoutEffect(() => {
@@ -82,7 +80,7 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    fetchWeather('Hyderabad'); // Default Hyderabad for IST test
+    fetchWeather('Hyderabad');
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
